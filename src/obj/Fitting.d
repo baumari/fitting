@@ -1,8 +1,5 @@
 /Users/kento/Library/Util/fitting/src/obj/Fitting.o: \
   /Users/kento/Library/Util/fitting/src/Fitting.cxx \
-  /Users/kento/Library/Util/fitting/include/mynrutil.hh \
-  /Users/kento/work/physics/kinema/include/KTheodata.hh \
-  /Users/kento/work/physics/kinema/include/KExpdata.hh \
   /opt/root/build/v6.18.02/include/TGraphErrors.h \
   /opt/root/build/v6.18.02/include/TGraph.h \
   /opt/root/build/v6.18.02/include/TNamed.h \
@@ -83,14 +80,10 @@
   /opt/root/build/v6.18.02/include/TError.h \
   /opt/root/build/v6.18.02/include/Math/ParamFunctor.h \
   /Users/kento/work/physics/kinema/include/KTF1Spline.hh \
+  /Users/kento/work/physics/kinema/include/KTheodata.hh \
+  /Users/kento/work/physics/kinema/include/KExpdata.hh \
   /Users/kento/work/physics/kinema/include/KUtil.hh \
   /Users/kento/work/physics/kinema/include/K3Vector.hh
-
-/Users/kento/Library/Util/fitting/include/mynrutil.hh:
-
-/Users/kento/work/physics/kinema/include/KTheodata.hh:
-
-/Users/kento/work/physics/kinema/include/KExpdata.hh:
 
 /opt/root/build/v6.18.02/include/TGraphErrors.h:
 
@@ -251,6 +244,10 @@
 /opt/root/build/v6.18.02/include/Math/ParamFunctor.h:
 
 /Users/kento/work/physics/kinema/include/KTF1Spline.hh:
+
+/Users/kento/work/physics/kinema/include/KTheodata.hh:
+
+/Users/kento/work/physics/kinema/include/KExpdata.hh:
 
 /Users/kento/work/physics/kinema/include/KUtil.hh:
 
