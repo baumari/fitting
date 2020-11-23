@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <cstdio>
+#include <algorithm>
 #include <TGraphErrors.h>
 #include <TCanvas.h>
 #include <TLine.h>
@@ -12,47 +13,43 @@
 #include <TVirtualPad.h>
 #include <TString.h>
 #include <TF1.h>
+#include <TAxis.h>
 
 #include <KTF1Spline.hh>
 #include <KUtil.hh>
 #include <KExpdata.hh>
 #include <KTheodata.hh>
+#include <KOptions.hh>
 
-#define ROOT
-//#define ADDERR 
+void usage(){
+  std::cout << "fitting expfile theofile1 theofile2 ..." << std::endl;
+}
+
 
 int main(int argc, char* argv[]){
-#ifdef ADDERR
-  #ifdef ROOT
-  std::cout << "You cannot use root fit in adderr option!!" << std::endl;
-  std::exit(EXIT_FAILURE);
-  #endif
-#endif
-
-  /** Check environment **/
-#ifndef ROOT
-  if(argc != 3){
-    fprintf(stderr, "Usage: %s expfile theofile\n",argv[0]);
-    fprintf(stderr, "Multiple theofiles are only allowed in ROOT-mode.\n");
-    std::exit(EXIT_FAILURE);
-  }  
-#endif  
-  if(argc < 3){
-    fprintf(stderr, "Usage: %s expfile theofile1 theofile2 ...\n",argv[0]);
+  KOptions opt;
+  opt.Add("h","help","Print this help.");
+  opt.Add("","no-error","No estimation of error bands.");
+  if(!opt.Check(argc, argv)){
+    usage();
     std::exit(EXIT_FAILURE);
   }
+  if(opt.Exist("h")){
+    usage();
+    opt.Description();
+    std::exit(EXIT_SUCCESS);
+  }
+
   /** Read experimental data **/
-  KExpdataCS Exp(argv[1]);
+  KExpdataCS Exp(argv[opt.LeadArg()]);
   /** Read Theoretical data **/  
   std::vector<KTheodata> vTheo;
-  for(int itheo = 2; itheo != argc; ++itheo){
-    vTheo.push_back(KTheodata(argv[itheo]));
+  for(int itheo = 1; itheo != opt.nArg(); ++itheo){
+    vTheo.push_back(KTheodata(argv[opt.LeadArg() + itheo]));
   }
-
-#ifdef ROOT
+  /*** Fitting Routine ****/
   TApplication app("app", &argc, argv);
   auto c = new TCanvas("c","c");
-  c->Divide(1,2);  
   auto gr = new TGraphErrors(Exp.GetN(), &Exp.fx[0], &Exp.fy[0], &Exp.fx_err[0], &Exp.fy_err[0]);
   gr->SetTitle("Experimental Data");
   std::vector<KTF1Spline*> vSp;
@@ -75,6 +72,8 @@ int main(int argc, char* argv[]){
   gr->SetMarkerStyle(3);
   gr->SetMarkerSize(1);
   gr->Draw("AP");
+  gr->GetXaxis()->SetLimits(xmin, xmax);
+  gr->GetYaxis()->SetRangeUser(fitf->GetMinimum(xmin, xmax)*0.8, fitf->GetMaximum(xmin, xmax)*1.2);
   fitf->SetLineWidth(1);
   fitf->SetLineColor(kBlack);
   fitf->Draw("lsame");
@@ -96,7 +95,9 @@ int main(int argc, char* argv[]){
     std::cout << Form("p[%d]: %lf , error: %lf ", ipar, fitf->GetParameter(ipar), fitf->GetParError(ipar));
   std::cout << std::endl;
   std::cout << "Reduced-chisq: " << fitf->GetChisquare()/fitf->GetNDF() << std::endl;
+  if(opt.Exist("no-error")) app.Run();
 
+  /*** Estimation of error bands ***/
   std::cout << "Additional error-estimation (mizumashi)" << std::endl;
   for(auto &&err : Exp.fy_err) err*=sqrt(fitf->GetChisquare()/fitf->GetNDF());
   auto gr_additional = new TGraphErrors(Exp.GetN(), &Exp.fx[0], &Exp.fy[0], &Exp.fx_err[0], &Exp.fy_err[0]);
@@ -144,49 +145,7 @@ int main(int argc, char* argv[]){
     }
   }
 
-  // double MinChisq = f->GetChisquare();
-  // double MinCoeff = f->GetParameter(2*Theo.GetN()+1);
-  // double chisq = MinChisq;
-  // double coeff;
-  // const double delta = 0.001;
-  // std::vector<double> vCoeff, vChisq;
-  // double limit = MinCoeff*0.10; // varying in 20% is acceptable <= you can change
-  // for(coeff = MinCoeff-limit; coeff <= MinCoeff+limit;){
-  //   f->FixParameter(2*Theo.GetN()+1, coeff);
-  //   gr->Fit(f, "Q0", "", Theo.GetfxMin(), Theo.GetfxMax());
-  //   vCoeff.push_back(f->GetParameter(2*Theo.GetN()+1));
-  //   vChisq.push_back(f->GetChisquare());
-  //   coeff += delta*MinCoeff;
-  // }
-  // c->cd(2);
-  // auto grcont = new TGraph((int)vCoeff.size(), &vCoeff[0], &vChisq[0]);
-  // grcont->SetTitle("Chisquare contour;Coefficient;Chisquare");  
-  // grcont->SetMarkerColor(kBlack);
-  // grcont->SetMarkerStyle(3);
-  // grcont->SetMarkerSize(1);
-  // grcont->Draw("AP");
-  // c->Update(); 
-  
-  // if(vChisq[0] < MinChisq+1 || vChisq.back() < MinChisq+1){
-  //   std::cout << "Calcualtion spaces are small!!" << std::endl;
-  //   app.Run();    
-  //   return 0;
-  // }
-  // double err_coeff[2];
-  // int flag = 0;
-  // for(std::size_t idx = 0; idx != vChisq.size(); ++idx){
-  //   if(flag == 0 && (vChisq[idx] < MinChisq+1)){
-  //     flag = 1;
-  //     err_coeff[0] = vCoeff[idx];
-  //   }
-  //   if(flag == 1 && (vChisq[idx] > MinChisq+1)){
-  //     err_coeff[1] = vCoeff[idx];
-  //     break;
-  //   }
-  // }
-  // std::cout << "Error(chisq-cont): " << fabs(err_coeff[0]-MinCoeff) << std::endl;
   app.Run();
-#endif
   return 0;
 }
 

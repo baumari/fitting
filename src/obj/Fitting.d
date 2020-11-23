@@ -79,11 +79,16 @@
   /opt/root/build/v6.18.02/include/TMath.h \
   /opt/root/build/v6.18.02/include/TError.h \
   /opt/root/build/v6.18.02/include/Math/ParamFunctor.h \
+  /opt/root/build/v6.18.02/include/TAxis.h \
+  /opt/root/build/v6.18.02/include/TAttAxis.h \
+  /opt/root/build/v6.18.02/include/TArrayD.h \
+  /opt/root/build/v6.18.02/include/TArray.h \
   /Users/kento/work/physics/kinema/include/KTF1Spline.hh \
   /Users/kento/work/physics/kinema/include/KTheodata.hh \
   /Users/kento/work/physics/kinema/include/KExpdata.hh \
   /Users/kento/work/physics/kinema/include/KUtil.hh \
-  /Users/kento/work/physics/kinema/include/K3Vector.hh
+  /Users/kento/work/physics/kinema/include/K3Vector.hh \
+  /Users/kento/work/physics/kinema/include/KOptions.hh
 
 /opt/root/build/v6.18.02/include/TGraphErrors.h:
 
@@ -243,6 +248,14 @@
 
 /opt/root/build/v6.18.02/include/Math/ParamFunctor.h:
 
+/opt/root/build/v6.18.02/include/TAxis.h:
+
+/opt/root/build/v6.18.02/include/TAttAxis.h:
+
+/opt/root/build/v6.18.02/include/TArrayD.h:
+
+/opt/root/build/v6.18.02/include/TArray.h:
+
 /Users/kento/work/physics/kinema/include/KTF1Spline.hh:
 
 /Users/kento/work/physics/kinema/include/KTheodata.hh:
@@ -252,3 +265,5 @@
 /Users/kento/work/physics/kinema/include/KUtil.hh:
 
 /Users/kento/work/physics/kinema/include/K3Vector.hh:
+
+/Users/kento/work/physics/kinema/include/KOptions.hh:
