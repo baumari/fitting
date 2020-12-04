@@ -70,7 +70,7 @@ int main(int argc, char* argv[]){
   vSp[0]->Getf()->GetRange(xmin, xmax);
   auto fitf = new TF1("fitf", lambda_func.c_str(), xmin, xmax, vTheo.size());
   for(std::size_t ipar = 0; ipar != vTheo.size(); ++ipar) fitf->SetParLimits(ipar, 0., 1.);
-  gr->Fit(fitf, "Q0", "", vTheo[0].GetfxMin(), vTheo[0].GetfxMax());
+  gr->Fit(fitf, "Q0", "", xmin, xmax);
   gr->SetMarkerColor(kBlack);
   gr->SetMarkerStyle(3);
   gr->SetMarkerSize(1);
@@ -104,7 +104,7 @@ int main(int argc, char* argv[]){
   std::cout << "Additional error-estimation (mizumashi)" << std::endl;
   for(auto &&err : Exp.fy_err) err*=sqrt(fitf->GetChisquare()/fitf->GetNDF());
   auto gr_additional = new TGraphErrors(Exp.GetN(), &Exp.fx[0], &Exp.fy[0], &Exp.fx_err[0], &Exp.fy_err[0]);
-  gr_additional->Fit(fitf, "Q0", "", vTheo[0].GetfxMin(), vTheo[0].GetfxMax());
+  gr_additional->Fit(fitf, "Q0", "", xmin, xmax);
   if(vTheo.size() == 1){
     for(int ipar = 0; ipar != vTheo.size(); ++ipar)
     std::cout << Form("p[%d]: %lf , error: %lf ", ipar, fitf->GetParameter(ipar), fitf->GetParError(ipar));
@@ -121,7 +121,7 @@ int main(int argc, char* argv[]){
     for(std::size_t itheo = 0; itheo != vTheo.size(); ++itheo){
       for(double ratio = 1.-limit; ratio <= 1.+limit; ratio+=delta){
 	fitf->FixParameter(itheo, vMinCoeff[itheo]*ratio);
-	gr_additional->Fit(fitf, "Q0", "", vTheo[0].GetfxMin(), vTheo[0].GetfxMax());
+	gr_additional->Fit(fitf, "Q0", "", xmin, xmax);
 	vcoeff[itheo].push_back(fitf->GetParameter(itheo)); vchisq[itheo].push_back(fitf->GetChisquare());
 	fitf->ReleaseParameter(itheo); // release parameter
 	fitf->SetParLimits(itheo, 0.,1.);
