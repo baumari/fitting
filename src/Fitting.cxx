@@ -39,7 +39,10 @@ int main(int argc, char* argv[]){
     opt.Description();
     std::exit(EXIT_SUCCESS);
   }
-
+  if(opt.nArg() < 2){
+    usage();
+    std::exit(EXIT_FAILURE);
+  }
   /** Read experimental data **/
   KExpdataCS Exp(argv[opt.LeadArg()]);
   /** Read Theoretical data **/  
